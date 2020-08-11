@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing: border-box;
+    }
+    h1 {
+      text-align: center;
+      background-color: orange;
+      font-size: 40px;
+    }
+    h2 {
+      text-align: center;
+      background-color: purple;
+      color:#fff;
+      height:40px;
+      width:300px;
+      line-height:40px;
+      margin:0 auto;
+    }
+    
+    .content {
+      width:auto;
+      border:2px solid #000;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <h1>音乐排行榜</h1>
+  <div class="content"></div>
+  <button>获取播放列表</button>
+  <script>
+    var btn = document.querySelector('button');
+    var content = document.querySelector('.content')
+    btn.onclick = function(){
+      var xhr = new XMLHttpRequest();
+      xhr.open('post','https://api.apiopen.top/musicRankings',true);
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4 && xhr.status == 200){
+          var resultObj = JSON.parse(xhr.responseText)
+          console.log(resultObj)
+          if(resultObj.code == 200 && resultObj.message == '成功!'){
+            var html2 = '';
+            resultObj.result.forEach(function(item){
+              html2 += `
+                <h2>${item.name}</h2>
+                <img src="${item.pic_s210}" alt="">
+                <p>${item.comment}</p>
+              `;
+              item.content.forEach(function(items){
+                html2 += `
+                  <h3>${items.title}</h3>
+                  <h4>${items.author}</h4>
+                  <img src="${items.pic_small}" alt="">
+                `
+              })
+            })
+            content.innerHTML = html2;
+          }
+          
+        }
+      }
+      xhr.send();
+    }
+    
+  </script>
+</body>
+</html>
